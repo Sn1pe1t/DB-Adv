@@ -1,0 +1,7 @@
+pgadmin-data/
+pgadmin/
+.pgadmin/
+*.pgpass
+sessions/
+storage/
+_Infra/pgadmin/

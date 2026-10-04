@@ -3,11 +3,11 @@
 -- Удаление таблиц
 
 
-DROP TABLE IF EXISTS "Пользователи";
-DROP TABLE IF EXISTS "Пачки";
-DROP TABLE IF EXISTS "Параметры";
-DROP TABLE IF EXISTS "Должности";
-DROP TABLE IF EXISTS "Типы оборудования";
+DROP TABLE IF EXISTS "Пользователи" CASCADE;
+DROP TABLE IF EXISTS "Пачки" CASCADE;
+DROP TABLE IF EXISTS "Параметры" CASCADE;
+DROP TABLE IF EXISTS "Должности" CASCADE;
+DROP TABLE IF EXISTS "Типы оборудования" CASCADE;
 
 
 -- Создание таблиц
@@ -34,10 +34,7 @@ CREATE TABLE "Пользователи" (
     "Фамилия" VARCHAR(50) NOT NULL,
     "Имя" VARCHAR(50) NOT NULL,
     "Логин" VARCHAR(50) UNIQUE NOT NULL,
-    "Код должности" INTEGER NOT NULL,
-
-    FOREIGN KEY ("Код должности")
-        REFERENCES "Должности" ("Код")
+    "Код должности" INTEGER NOT NULL
 );
 
 CREATE TABLE "Пачки" (
@@ -46,15 +43,7 @@ CREATE TABLE "Пачки" (
     "Код пользователя" INTEGER NOT NULL,
     "Код оборудования" INTEGER NOT NULL,
     "Код параметра" INTEGER NOT NULL,
-
-    FOREIGN KEY ("Код пользователя")
-        REFERENCES "Пользователи" ("Код"),
-
-    FOREIGN KEY ("Код оборудования")
-        REFERENCES "Типы оборудования" ("Код"),
-
-    FOREIGN KEY ("Код параметра")
-        REFERENCES "Параметры" ("Код")
+    "Дата измерения" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 
