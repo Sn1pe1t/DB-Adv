@@ -1,9 +1,12 @@
-do 
-$$ begin
 
 
     -- Транзакция 1: структура таблиц и счётчики (sequence)
 
+
+begin;
+
+do 
+$$ begin
 
     ```drop table if exists "Параметры", "Пачки", "Пользователи", "Типы параметров",
                          "Единицы измерения", "Базовые единицы", "Типы оборудования", "Должности",
@@ -84,11 +87,18 @@ $$ begin
         "Поправка"         numeric not null
     );
  
-    commit;
+end $$;
+
+commit;
 
 
     -- Транзакция 2: тестовые данные
 
+
+begin;
+
+do 
+$$ begin
 
     insert into "Должности" ("Код", "Название") values
         (1, 'Оператор'),
@@ -202,11 +212,18 @@ $$ begin
         (6, 30,   30,   3.5),
         (7, 40,   40,   4.5);
  
-    commit;
+end $$;
+
+commit;
 
 
     -- Транзакция 3: связи между таблицами и ограничения
 
+
+begin;
+
+do 
+$$ begin
 
     alter table "Единицы измерения" add constraint fk_units_base
         foreign key ("Код базовой единицы") references "Базовые единицы" ("Код");
@@ -243,8 +260,7 @@ $$ begin
  
     alter table "Виртуальные поправки" add constraint ck_corrections_range
         check ("Мин температура" <= "Макс температура");
- 
-    commit;
-
 
 end $$;
+
+commit;
