@@ -1,21 +1,18 @@
+do $$ 
+begin
 
 
     -- Транзакция 1: структура таблиц и счётчики (sequence)
 
 
-begin;
-
-do $$ 
-
     begin
 
-    ```drop table if exists "Параметры", "Пачки", "Пользователи", "Типы параметров",
+    drop table if exists "Параметры", "Пачки", "Пользователи", "Типы параметров",
                          "Единицы измерения", "Базовые единицы", "Типы оборудования", "Должности",
                          "Виртуальные поправки" cascade;
  
     drop sequence if exists seq_parameters, seq_batches, seq_users, seq_parameter_types,
-                            seq_units, seq_base_units, seq_equipment_types, seq_positions,
-                            seq_corrections;```
+                            seq_units, seq_base_units, seq_equipment_types, seq_positions;
  
     create sequence seq_positions;
     create sequence seq_equipment_types;
@@ -25,7 +22,6 @@ do $$
     create sequence seq_users;
     create sequence seq_batches;
     create sequence seq_parameters;
-    create sequence seq_corrections;
  
     create table "Должности" (
         "Код"      integer      primary key default nextval('seq_positions'),
@@ -82,10 +78,8 @@ do $$
     );
  
     create table "Виртуальные поправки" (
-        "Код"              integer primary key default nextval('seq_corrections'),
-        "Мин температура"  numeric,
-        "Макс температура" numeric,
-        "Поправка"         numeric not null
+        "Температура"      numeric      not null,
+        "Поправка"         numeric      not null
     );
  
     end;
@@ -199,14 +193,14 @@ do $$
         (45, 15,   9, 6);
  
     -- таблица 1 алгоритма расчёта: виртуальная поправка по температуре t0
-    insert into "Виртуальные поправки" ("Код", "Мин температура", "Макс температура", "Поправка") values
-        (1, null, 0,    0),
-        (2, 0,    5,    0.5),
-        (3, 10,   15,   1),
-        (4, 20,   20,   1.5),
-        (5, 25,   25,   2),
-        (6, 30,   30,   3.5),
-        (7, 40,   40,   4.5);
+    insert into "Виртуальные поправки" ("Температура", "Поправка") values
+        (0, 0.5),
+        (5, 0.5),
+        (10, 1),
+        (20, 1.5),
+        (25, 2),
+        (30, 3.5),
+        (40, 4.5);
 
     end;
     commit;
@@ -249,13 +243,8 @@ do $$
  
     alter table "Типы параметров" add constraint ck_parameter_types_range
         check ("Мин значение" <= "Макс значение");
- 
-    alter table "Виртуальные поправки" add constraint ck_corrections_range
-        check ("Мин температура" <= "Макс температура");
 
     end;
     commit;
 
 end $$;
-
-commit;
