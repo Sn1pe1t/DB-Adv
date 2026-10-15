@@ -87,18 +87,13 @@ $$ begin
         "Поправка"         numeric not null
     );
  
-end $$;
-
-commit;
+    end;
 
 
     -- Транзакция 2: тестовые данные
 
 
-begin;
-
-do 
-$$ begin
+    begin
 
     insert into "Должности" ("Код", "Название") values
         (1, 'Оператор'),
@@ -211,19 +206,14 @@ $$ begin
         (5, 25,   25,   2),
         (6, 30,   30,   3.5),
         (7, 40,   40,   4.5);
- 
-end $$;
 
-commit;
+    end;
 
 
     -- Транзакция 3: связи между таблицами и ограничения
 
 
-begin;
-
-do 
-$$ begin
+    begin
 
     alter table "Единицы измерения" add constraint fk_units_base
         foreign key ("Код базовой единицы") references "Базовые единицы" ("Код");
@@ -260,6 +250,8 @@ $$ begin
  
     alter table "Виртуальные поправки" add constraint ck_corrections_range
         check ("Мин температура" <= "Макс температура");
+
+    end;
 
 end $$;
 
